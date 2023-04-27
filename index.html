@@ -1,0 +1,99 @@
+<html>
+
+<head>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+</head>
+
+<body>
+   
+    <!-- Main Scene -->
+    <a-scene>
+
+        <!-- Assets -->
+        <a-assets>
+            <a-asset-item id="platform" src="./assets/stone_platform.glb"></a-asset-item>
+            <a-asset-item id="door" src="./assets/wooden_door.glb"></a-asset-item>
+        </a-assets>
+
+        <!-- Camera -->
+        <a-entity id="rig" position="0 1 0">
+            <a-camera id="camera">
+                <a-cursor></a-cursor>
+            </a-camera>
+        </a-entity>
+
+        <a-entity daydream-controls></a-entity>
+
+        <!-- Platform Ground added from sketchfab -->
+        <a-entity gltf-model="#platform"></a-entity>
+        <a-entity gltf-model="#platform" position="15 0 0"></a-entity>
+        <a-entity gltf-model="#platform" position="0 0 -10"></a-entity>
+        <a-entity gltf-model="#platform" position="15 0 -10"></a-entity>
+
+        <a-box color="#617A55" event-set__enter="_event: mouseenter; _target: #sky; color: #617A55" depth="2" height="2"
+            width="2" position="19 0 -6"></a-box>
+
+        <a-box color="#A5C0DD" event-set__enter="_event: mouseenter; _target: #sky; color: #A5C0DD" depth="2" height="2"
+            width="2" position="19 0 -9"></a-box>
+
+        <a-box color="#FF6969" event-set__enter="_event: mouseenter; _target: #sky; color: #FF6969" depth="2" height="2"
+            width="2" position="19 0 -12"></a-box>
+
+        <a-box color="#F7D060" event-set__enter="_event: mouseenter; _target: #sky; color: #F7D060" depth="2" height="2"
+            width="2" position="19 0 0"></a-box>
+
+        <a-entity text="value: Hey, turn right; color: #000" position="0 3 -2" scale="3 3 3"></a-entity>
+        <a-entity add-platform="" text="value: Add platform?; color: #000" position="0 2 -12" scale="5 6 5"></a-entity>
+        <a-sky id="sky" color="#ECECEC"></a-sky>
+
+    </a-scene>
+
+     <!-- Script for components and events -->
+     <script >
+         
+         const createEntity = (entityName, attr) => {
+            var sceneEl = document.querySelector('a-scene');
+            var entityEl = document.createElement(entityName);
+            for (const key in attr){
+                console.log(key,attr[key])
+                entityEl.setAttribute(key, attr[key]);
+                sceneEl.appendChild(entityEl)
+            }
+        }
+
+        AFRAME.registerComponent('add-platform', {
+            init: function () {
+                var el = this.el;  // grabs the text entity
+                el.addEventListener('mouseenter', () => {
+                    console.log('Adding platform');
+                    createEntity('a-entity', {
+                        "gltf-model": "#platform",
+                        "position": "0 0 -20"
+                    })
+                    createEntity('a-entity', {
+                        "gltf-model": "#platform",
+                        "position": "15 0 -20"
+                    })
+                    createEntity('a-entity', {
+                        "gltf-model": "#door",
+                        "position": "15 -1 -22",
+                        "to-ar":''
+                    })
+                });
+            }
+        });
+
+        AFRAME.registerComponent('to-ar', {
+            init: function () {
+                var el = this.el;  // grabs the door entity
+                el.addEventListener('mouseenter', () => {
+                    window.location.href = '/ar.html'
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
